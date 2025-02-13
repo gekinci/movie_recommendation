@@ -1,7 +1,10 @@
 import os
+import random
 import pandas as pd
+import streamlit as st
 
 import utils as utl
+import streamlit_app as st_app
 from recommenders import MovieRecommender
 
 
@@ -20,14 +23,16 @@ if __name__=='__main__':
 
     recommender = MovieRecommender(data_folder_name)
 
-    new_user_ratings = {"Toy Story (1995)":5.0,
-                        "Incredibles, The (2004)": 5.0,
-                        "Holiday, The (2006)": 5.0,
-                        "The Intern (2015)": 5.0,
-                        "The Lobster (2015)": 1.0,
-                        "Get Out (2017)": 1.0
-                        }
-    new_user_ratings = pd.Series(new_user_ratings)
+    st.title("What to watch tonight?: A movie guru")
+    st.write("Let's get some movie recommendations based on your ratings!")
 
-    simScores = recommender.get_similarity_score(new_user_ratings)
-    print(simScores.head(10))
+    # with st.sidebar:
+    num_ratings = st.select_slider(label="How many movies would you like to rate?", options=range(5, 26), value=5)
+    num_recommendations = st.select_slider(label="How many recommendations would you like to get?", options=range(5, 21), value=5)
+
+    # TODO: add popularity metric for rating list
+    if "movie_list" not in st.session_state.keys():
+        st.session_state["movie_list"] =  random.sample(recommender.movie_list, num_ratings)
+    new_user_ratings = st_app.get_user_ratings()
+
+    st_app.get_recommendations(recommender, new_user_ratings, num_recommendations)

@@ -14,6 +14,8 @@ scikit-learn==1.6.1
 scipy==1.15.1
 setuptools==72.1.0
 six==1.16.0
+streamlit==1.42.0
+st-star-rating==0.0.6
 threadpoolctl==3.5.0
 tzdata==2023.3
 wheel==0.45.1
