@@ -5,7 +5,8 @@ from sklearn.metrics.pairwise import cosine_similarity
 class MovieRecommender:
     def __init__(self, folder_path):
         self.folder_path = folder_path
-        self.df_movies, self.movie_list = self.get_df_movies()
+        self.df_movies = self.get_df_movies()
+        self.pop_movie_list = self.get_popular_movie_list()
 
     def get_df_movies(self):
         df_ratings = pd.read_csv(f"{self.folder_path}/ratings.csv")
@@ -18,8 +19,13 @@ class MovieRecommender:
         df_info = pd.concat([df_info, df_genres], axis=1)
 
         df_movies = pd.merge(df_info, df_ratings)
-        movie_list = list(set(df_movies["title"].values))
-        return df_movies, movie_list
+        return df_movies
+
+    def get_popular_movie_list(self):
+        df_popularity = self.df_movies.groupby("title").count()["rating"]
+        df_popularity = df_popularity / df_popularity.max()
+        movie_list = list(df_popularity[df_popularity>0.3].index)
+        return movie_list
 
     def get_ratings_corr_matrix(self):
         # Correlation matrix based on ratings

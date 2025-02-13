@@ -30,9 +30,8 @@ if __name__=='__main__':
     num_ratings = st.select_slider(label="How many movies would you like to rate?", options=range(5, 26), value=5)
     num_recommendations = st.select_slider(label="How many recommendations would you like to get?", options=range(5, 21), value=5)
 
-    # TODO: add popularity metric for rating list
     if "movie_list" not in st.session_state.keys():
-        st.session_state["movie_list"] =  random.sample(recommender.movie_list, num_ratings)
+        st.session_state["movie_list"] =  random.sample(recommender.pop_movie_list, num_ratings)
     new_user_ratings = st_app.get_user_ratings()
 
     st_app.get_recommendations(recommender, new_user_ratings, num_recommendations)
