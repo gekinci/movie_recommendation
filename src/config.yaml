@@ -1,0 +1,2 @@
+root_path: ./
+dataset: "ml-latest-small"  # "ml-latest"

@@ -1,21 +1,24 @@
 import os
 import pandas as pd
-import numpy as np
 
-from utils import download_and_unzip_from_url
+import utils as utl
 from recommenders import MovieRecommender
 
 
 if __name__=='__main__':
-    folder_name = "ml-latest-small"  # "ml-latest"
-    if os.path.exists(f"./{folder_name}"):
+    cfg = utl.load_yml("./src/config.yaml")
+
+    data_folder_name = cfg['dataset']
+    data_folder_path = utl.get_full_path(cfg["root_path"], cfg["dataset"])
+
+    if os.path.exists(data_folder_path):
         pass
     else:
-        os.makedirs(f"./{folder_name}")
-        url = f'https://files.grouplens.org/datasets/movielens/{folder_name}.zip'
-        download_and_unzip_from_url(url, folder_name)
+        os.makedirs(data_folder_path)
+        url = f'https://files.grouplens.org/datasets/movielens/{data_folder_name}.zip'
+        utl.download_and_unzip_from_url(url, cfg["root_path"])
 
-    recommender = MovieRecommender(folder_name)
+    recommender = MovieRecommender(data_folder_name)
 
     new_user_ratings = {"Toy Story (1995)":5.0,
                         "Incredibles, The (2004)": 5.0,
