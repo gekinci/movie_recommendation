@@ -26,12 +26,22 @@ if __name__=='__main__':
     st.title("What to watch tonight?: A movie guru")
     st.write("Let's get some movie recommendations based on your ratings!")
 
-    # with st.sidebar:
-    num_ratings = st.select_slider(label="How many movies would you like to rate?", options=range(5, 26), value=5)
-    num_recommendations = st.select_slider(label="How many recommendations would you like to get?", options=range(5, 21), value=5)
+    def set_state_movie_list():
+        st.session_state["movie_list"] = random.sample(recommender.pop_movie_list, st.session_state.n_ratings)
+
+    num_ratings = st.slider("How many movies would you like to rate?", 5, 25, 5, key="n_ratings", on_change=set_state_movie_list)
+    num_recommendations = st.slider("How many recommendations would you like to get?", 5, 10, 5)
 
     if "movie_list" not in st.session_state.keys():
         st.session_state["movie_list"] =  random.sample(recommender.pop_movie_list, num_ratings)
-    new_user_ratings = st_app.get_user_ratings()
 
-    st_app.get_recommendations(recommender, new_user_ratings, num_recommendations)
+    review_button = st.button("Start rating!")
+
+    if review_button:
+        st.session_state["review_button"] = True
+    if "review_button" in st.session_state.keys():
+        if st.session_state["review_button"]:
+            new_user_ratings = st_app.get_user_ratings()
+            rec_button = st.button("Get recommendations!")
+            if rec_button:
+                st_app.get_recommendations(recommender, new_user_ratings, num_recommendations)
